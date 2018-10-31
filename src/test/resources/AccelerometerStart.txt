@@ -1,0 +1,12 @@
+ (MyAnalogInput-A0) : VOLTS=1.63  | PERCENT=39.9% | RAW=13075.0
+ (MyAnalogInput-A1) : VOLTS=1.63  | PERCENT=39.8% | RAW=13050.0
+ (MyAnalogInput-A2) : VOLTS=2.02  | PERCENT=49.2% | RAW=16134.0
+ (MyAnalogInput-A3) : VOLTS=0.56  | PERCENT=13.8% | RAW=4507.0
+
+
+
+
+Z = -1G
+ (MyAnalogInput-A1) : VOLTS=1.63  | PERCENT=39.8% | RAW=13057.0
+
+Y = -1G
