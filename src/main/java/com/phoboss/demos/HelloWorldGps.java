@@ -1,4 +1,4 @@
-package com.phoboss;
+package com.phoboss.demos;
 
 import com.gps.*;
 import com.pi4j.io.gpio.GpioController;
@@ -8,7 +8,7 @@ import com.seven.segment.SevenSegmentManager;
 public class HelloWorldGps {
 
     public static void main(String[] args) {
-        final GPS gps = new GPS(null);
+        final GPS gps = new GPS();
         System.out.println("GPS Initialized, waiting for events");
 
         final GpioController gpio = GpioFactory.getInstance();

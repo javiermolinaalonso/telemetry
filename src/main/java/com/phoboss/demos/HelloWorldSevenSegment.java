@@ -1,4 +1,4 @@
-package com.phoboss;
+package com.phoboss.demos;
 
 import com.pi4j.io.gpio.*;
 import com.seven.segment.SevenSegmentManager;

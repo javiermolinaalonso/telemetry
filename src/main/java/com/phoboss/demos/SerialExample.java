@@ -1,4 +1,4 @@
-package com.phoboss;
+package com.phoboss.demos;
 
 // START SNIPPET: serial-snippet
 

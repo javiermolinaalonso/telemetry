@@ -1,6 +1,5 @@
 package com.gps;
 
-import com.gps.publisher.GpsEventPublisher;
 import com.pi4j.io.serial.*;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ public class GPS {
     /**
      * Creates a new GPS instance.
      */
-    public GPS(GpsEventPublisher gpsEventPublisher) {
+    public GPS() {
         serial = SerialFactory.createInstance();
         dataRetrieverThread = new Thread(dataRetriever, "GPS Data Retriever");
         initialize();
