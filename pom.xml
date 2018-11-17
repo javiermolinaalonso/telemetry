@@ -20,7 +20,7 @@
         <pi.user>pi</pi.user>
         <pi.password>superraspi</pi.password>
         <pi.deployDirectory>/home/pi/projects</pi.deployDirectory>
-        <pi.main.class>com.phoboss.demos.HelloWorldI2C</pi.main.class>
+        <pi.main.class>com.phoboss.io.demos.HelloWorldI2C</pi.main.class>
 
     </properties>
 
