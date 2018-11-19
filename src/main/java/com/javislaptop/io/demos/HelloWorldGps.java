@@ -1,7 +1,6 @@
 package com.javislaptop.io.demos;
 
 import com.javislaptop.io.gps.*;
-import com.phoboss.io.gps.*;
 import com.javislaptop.io.sevensegment.SevenSegmentManager;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;

@@ -2,7 +2,6 @@ package com.javislaptop.telemetry.service;
 
 import com.javislaptop.io.gps.*;
 import com.javislaptop.telemetry.printer.Printer;
-import com.phoboss.io.gps.*;
 import com.javislaptop.telemetry.printer.PrinterType;
 import org.springframework.stereotype.Service;
 
