@@ -1,16 +1,46 @@
-package com.javislaptop.io.gps;
+package com.javislaptop.io.gps.impl;
 
+import com.javislaptop.io.gps.GPSEvent;
+import com.javislaptop.io.gps.model.PositionEvent;
+import com.javislaptop.io.gps.model.VelocityEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
-public class GpsConsumer {
+public class GpsParser {
 
     private static final String POSITION_TAG = "$GPGGA";
     private static final String VELOCITY_TAG = "$GPVTG";
 
-    public Optional<GPSEvent> consume(String dataLine) {
+    private StringBuilder builder;
+
+    GpsParser() {
+        this.builder = new StringBuilder();
+    }
+
+    synchronized List<GPSEvent> parse(String str) {
+        StringTokenizer st = new StringTokenizer(str, "\n", true);
+        List<GPSEvent> events = new ArrayList<>();
+        while (st.hasMoreElements()) {
+            String dataLine = st.nextToken();
+            while ("\n".equals(dataLine) && st.hasMoreElements()) {
+                dataLine = st.nextToken();
+            }
+            if (st.hasMoreElements()) {
+                consume(dataLine).ifPresent(events::add);
+            } else if (!"\n".equals(dataLine)) {
+                builder.append(dataLine);
+            }
+        }
+        return events;
+    }
+
+    private Optional<GPSEvent> consume(String dataLine) {
         if (hasValidCheckSum(dataLine)) {
             if (dataLine.startsWith(POSITION_TAG)) {
                 return of(new PositionEvent(dataLine));

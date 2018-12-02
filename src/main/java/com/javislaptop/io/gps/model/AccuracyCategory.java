@@ -1,4 +1,4 @@
-package com.javislaptop.io.gps;
+package com.javislaptop.io.gps.model;
 
 public enum AccuracyCategory {
     IDEAL(1, "Ideal",
@@ -27,7 +27,7 @@ public enum AccuracyCategory {
     private String name;
     private String description;
 
-    private AccuracyCategory(int dop, String name, String description) {
+    AccuracyCategory(int dop, String name, String description) {
         this.dop = dop;
         this.name = name;
         this.description = description;

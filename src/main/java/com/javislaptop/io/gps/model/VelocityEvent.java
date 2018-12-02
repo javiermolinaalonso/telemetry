@@ -1,4 +1,6 @@
-package com.javislaptop.io.gps;
+package com.javislaptop.io.gps.model;
+
+import com.javislaptop.io.gps.GPSEvent;
 
 public class VelocityEvent implements GPSEvent {
     private float trueTrackMadeGood = Float.NaN;

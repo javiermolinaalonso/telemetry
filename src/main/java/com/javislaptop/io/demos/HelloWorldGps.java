@@ -1,14 +1,30 @@
 package com.javislaptop.io.demos;
 
-import com.javislaptop.io.gps.*;
+import com.javislaptop.io.gps.GPSEvent;
+import com.javislaptop.io.gps.GPSListener;
+import com.javislaptop.io.gps.impl.GpsDataProviderSerial;
+import com.javislaptop.io.gps.impl.GpsDataRetriever;
+import com.javislaptop.io.gps.model.PositionEvent;
+import com.javislaptop.io.gps.model.VelocityEvent;
 import com.javislaptop.io.sevensegment.SevenSegmentManager;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.serial.*;
 
 public class HelloWorldGps {
 
-    public static void main(String[] args) {
-        final GPS gps = new GPS();
+    public static void main(String[] args) throws Exception {
+        final Serial serial = SerialFactory.createInstance();
+        SerialConfig config = new SerialConfig();
+        config.device("/dev/ttyUSB0")
+                .baud(Baud._9600)
+                .dataBits(DataBits._8)
+                .parity(Parity.NONE)
+                .stopBits(StopBits._1)
+                .flowControl(FlowControl.NONE);
+        serial.open(config);
+
+        final GpsDataRetriever gps = new GpsDataRetriever(new GpsDataProviderSerial(serial));
         System.out.println("GPS Initialized, waiting for events");
 
         final GpioController gpio = GpioFactory.getInstance();

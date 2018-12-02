@@ -1,4 +1,4 @@
-package com.javislaptop.io.gps;
+package com.javislaptop.io.gps.model;
 
 public class Location {
     private final static String STR_DEGREE = "\u00B0";

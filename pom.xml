@@ -20,7 +20,7 @@
         <pi.user>pi</pi.user>
         <pi.password>superraspi</pi.password>
         <pi.deployDirectory>/home/pi/projects</pi.deployDirectory>
-        <pi.main.class>com.javislaptop.io.demos.HelloWorldI2C</pi.main.class>
+        <pi.main.class>com.javislaptop.Telemetry</pi.main.class>
 
     </properties>
 
@@ -34,6 +34,11 @@
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-gpio-extension</artifactId>
             <version>1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.25</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

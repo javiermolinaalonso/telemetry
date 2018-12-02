@@ -1,6 +1,10 @@
 package com.javislaptop.telemetry.service;
 
-import com.javislaptop.io.gps.*;
+import com.javislaptop.io.gps.GPSEvent;
+import com.javislaptop.io.gps.GPSListener;
+import com.javislaptop.io.gps.impl.GpsDataRetriever;
+import com.javislaptop.io.gps.model.PositionEvent;
+import com.javislaptop.io.gps.model.VelocityEvent;
 import com.javislaptop.telemetry.printer.Printer;
 import com.javislaptop.telemetry.printer.PrinterType;
 import org.springframework.stereotype.Service;
@@ -11,10 +15,10 @@ import javax.annotation.PreDestroy;
 @Service
 public class GpsService implements GPSListener {
 
-    private final GPS gps;
+    private final GpsDataRetriever gps;
     private final Printer printer;
 
-    public GpsService(GPS gps, Printer printer) {
+    public GpsService(GpsDataRetriever gps, Printer printer) {
         this.gps = gps;
         this.printer = printer;
     }

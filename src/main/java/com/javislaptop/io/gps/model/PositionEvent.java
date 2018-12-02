@@ -1,4 +1,6 @@
-package com.javislaptop.io.gps;
+package com.javislaptop.io.gps.model;
+
+import com.javislaptop.io.gps.GPSEvent;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -6,6 +8,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class PositionEvent implements GPSEvent {
+    private static final float UNAIDED_POSITION_ACCURACY = 3.0f;
+
     private Date time;
     private FixQuality fixQuality;
     private Location location;
@@ -109,7 +113,7 @@ public class PositionEvent implements GPSEvent {
      * Returns an estimate of the max error for the location in this measurement, in meters.
      */
     public float getMaxError() {
-        return hdop * GPS.UNAIDED_POSITION_ACCURACY;
+        return hdop * UNAIDED_POSITION_ACCURACY;
     }
 
     @Override

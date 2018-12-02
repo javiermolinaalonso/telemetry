@@ -24,13 +24,13 @@ public class Accelerometer implements GpioPinListenerAnalog {
 
     private List<AccelerometerListener> listeners;
 
-    Accelerometer(GpioPinAnalogInput[] inputs, ADS1115GpioProvider gpioProvider) {
+    public Accelerometer(GpioPinAnalogInput[] inputs, ADS1115GpioProvider gpioProvider) {
         this.inputs = inputs;
         this.gpioProvider = gpioProvider;
         this.listeners = new ArrayList<>();
     }
 
-    Accelerometer init() {
+    public Accelerometer init() {
         of(inputs).forEach(x -> x.addListener(this));
         return this;
     }
