@@ -4,7 +4,7 @@ import com.javislaptop.io.accelerometer.Accelerometer;
 import com.javislaptop.io.accelerometer.AccelerometerEvent;
 import com.javislaptop.io.accelerometer.AccelerometerListener;
 import com.javislaptop.io.accelerometer.Axis;
-import com.javislaptop.telemetry.printer.Printer;
+import com.javislaptop.telemetry.printer.PrinterConsole;
 import com.javislaptop.telemetry.printer.PrinterType;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +17,9 @@ import static java.lang.Math.toDegrees;
 public class LeanService implements AccelerometerListener {
 
     private final Accelerometer accelerometer;
-    private final Printer printer;
+    private final PrinterConsole printer;
 
-    public LeanService(Accelerometer accelerometer, Printer printer) {
+    public LeanService(Accelerometer accelerometer, PrinterConsole printer) {
         this.accelerometer = accelerometer;
         this.printer = printer;
     }
@@ -35,7 +35,7 @@ public class LeanService implements AccelerometerListener {
         if (event.getAxis() == Axis.Z) {
             final double asinvalue = Math.abs(event.getValue() - event.getZeroG()) / event.getgDelta();
             final double degrees = toDegrees(acos(1 - asinvalue));
-            printer.print(Printer.DECIMAL_FORMAT.format(degrees), PrinterType.LEAN);
+            printer.print(PrinterConsole.DECIMAL_FORMAT.format(degrees), PrinterType.LEAN);
         }
     }
 

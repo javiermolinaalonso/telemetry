@@ -1,19 +1,12 @@
 package com.javislaptop.telemetry.printer;
 
-import org.springframework.stereotype.Service;
-
 import java.text.DecimalFormat;
 
-@Service
-public class Printer {
+public interface Printer {
 
-    public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
-    public static final DecimalFormat LAT_LNG_FORMAT = new DecimalFormat("#.########");
+    DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
+    DecimalFormat LAT_LNG_FORMAT = new DecimalFormat("#.########");
 
-    private Printer() {
-    }
+    void print(String text, PrinterType type);
 
-    public void print(String text, PrinterType type) {
-        System.out.println(String.format("%s#%s", type.getValue(), text));
-    }
 }

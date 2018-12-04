@@ -4,7 +4,7 @@ import com.javislaptop.io.gps.GPSEvent;
 import com.javislaptop.io.gps.GPSListener;
 import com.javislaptop.io.gps.model.PositionEvent;
 import com.javislaptop.io.gps.model.VelocityEvent;
-import com.javislaptop.telemetry.printer.Printer;
+import com.javislaptop.telemetry.printer.PrinterConsole;
 import com.javislaptop.telemetry.printer.PrinterType;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +15,9 @@ import javax.annotation.PreDestroy;
 public class GpsService implements GPSListener {
 
     private final GpsDataRetriever gps;
-    private final Printer printer;
+    private final PrinterConsole printer;
 
-    public GpsService(GpsDataRetriever gps, Printer printer) {
+    public GpsService(GpsDataRetriever gps, PrinterConsole printer) {
         this.gps = gps;
         this.printer = printer;
     }
@@ -45,11 +45,11 @@ public class GpsService implements GPSListener {
     private void onEvent(PositionEvent event) {
         final float latitude = event.getLocation().getLatitude();
         final float longitude = event.getLocation().getLongitude();
-        printer.print(String.format("%s, %s", Printer.LAT_LNG_FORMAT.format(latitude), Printer.LAT_LNG_FORMAT.format(longitude)), PrinterType.POSITION);
+        printer.print(String.format("%s,%s", PrinterConsole.LAT_LNG_FORMAT.format(latitude), PrinterConsole.LAT_LNG_FORMAT.format(longitude)), PrinterType.POSITION);
     }
 
     private void onEvent(VelocityEvent event) {
         final float groundSpeed = event.getGroundSpeed();
-        printer.print(Printer.DECIMAL_FORMAT.format(groundSpeed), PrinterType.SPEED);
+        printer.print(PrinterConsole.DECIMAL_FORMAT.format(groundSpeed), PrinterType.SPEED);
     }
 }
