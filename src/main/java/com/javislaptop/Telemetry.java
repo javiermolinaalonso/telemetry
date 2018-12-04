@@ -1,8 +1,12 @@
 package com.javislaptop;
 
 import com.javislaptop.io.accelerometer.Accelerometer;
+import com.javislaptop.io.accelerometer.AccelerometerAnalog;
+import com.javislaptop.io.accelerometer.AccelerometerMock;
+import com.javislaptop.io.gps.GpsDataProvider;
+import com.javislaptop.io.gps.impl.GpsDataProviderMock;
 import com.javislaptop.io.gps.impl.GpsDataProviderSerial;
-import com.javislaptop.io.gps.impl.GpsDataRetriever;
+import com.javislaptop.io.gps.impl.GpsParser;
 import com.pi4j.gpio.extension.ads.ADS1115GpioProvider;
 import com.pi4j.gpio.extension.ads.ADS1115Pin;
 import com.pi4j.gpio.extension.ads.ADS1x15GpioProvider;
@@ -15,12 +19,15 @@ import com.pi4j.io.serial.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.io.IOException;
 
 @SpringBootApplication
 @Configuration
+@ComponentScan(basePackages = {"com.javislaptop.telemetry"})
 public class Telemetry {
 
     public static void main(final String[] args) {
@@ -28,7 +35,8 @@ public class Telemetry {
     }
 
     @Bean
-    public Accelerometer accelerometer() throws IOException, I2CFactory.UnsupportedBusNumberException {
+    @Profile("!mock")
+    public Accelerometer accelerometerRaspi() throws IOException, I2CFactory.UnsupportedBusNumberException {
         final GpioController gpioController = GpioFactory.getInstance();
         final ADS1115GpioProvider gpioProvider = new ADS1115GpioProvider(I2CBus.BUS_1, ADS1115GpioProvider.ADS1115_ADDRESS_0x48);
         gpioProvider.setProgrammableGainAmplifier(ADS1x15GpioProvider.ProgrammableGainAmplifierValue.PGA_4_096V, ADS1115Pin.ALL);
@@ -42,12 +50,18 @@ public class Telemetry {
                 gpioController.provisionAnalogInputPin(gpioProvider, ADS1115Pin.INPUT_A3, "UNK"),
         };
 
-        return new Accelerometer(myInputs, gpioProvider).init();
+        return new AccelerometerAnalog(myInputs, gpioProvider).init();
     }
 
+    @Bean
+    @Profile("mock")
+    public Accelerometer accelerometerMock() {
+        return new AccelerometerMock();
+    }
 
     @Bean
-    public GpsDataRetriever gps() throws Exception {
+    @Profile("!mock")
+    public GpsDataProvider gpsRaspi() throws Exception {
         final Serial serial = SerialFactory.createInstance();
         SerialConfig config = new SerialConfig();
         config.device("/dev/ttyUSB0")
@@ -58,6 +72,13 @@ public class Telemetry {
                 .flowControl(FlowControl.NONE);
         serial.open(config);
 
-        return new GpsDataRetriever(new GpsDataProviderSerial(serial));
+        return new GpsDataProviderSerial(serial, new GpsParser());
     }
+
+    @Bean
+    @Profile("mock")
+    public GpsDataProvider gpsMock() {
+        return new GpsDataProviderMock();
+    }
+
 }

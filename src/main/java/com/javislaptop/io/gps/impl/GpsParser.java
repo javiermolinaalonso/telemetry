@@ -19,7 +19,7 @@ public class GpsParser {
 
     private StringBuilder builder;
 
-    GpsParser() {
+    public GpsParser() {
         this.builder = new StringBuilder();
     }
 

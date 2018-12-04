@@ -2,7 +2,6 @@ package com.javislaptop.telemetry.service;
 
 import com.javislaptop.io.gps.GPSEvent;
 import com.javislaptop.io.gps.GPSListener;
-import com.javislaptop.io.gps.impl.GpsDataRetriever;
 import com.javislaptop.io.gps.model.PositionEvent;
 import com.javislaptop.io.gps.model.VelocityEvent;
 import com.javislaptop.telemetry.printer.Printer;
@@ -26,6 +25,7 @@ public class GpsService implements GPSListener {
     @PostConstruct
     public void init() {
         gps.addListener(this);
+        gps.init();
     }
 
     @PreDestroy

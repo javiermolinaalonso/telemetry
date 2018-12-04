@@ -27,6 +27,7 @@ public class LeanService implements AccelerometerListener {
     @PostConstruct
     public void init() {
         this.accelerometer.addListener(this);
+        this.accelerometer.init();
     }
 
     @Override

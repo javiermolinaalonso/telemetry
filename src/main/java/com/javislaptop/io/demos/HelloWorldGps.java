@@ -3,10 +3,11 @@ package com.javislaptop.io.demos;
 import com.javislaptop.io.gps.GPSEvent;
 import com.javislaptop.io.gps.GPSListener;
 import com.javislaptop.io.gps.impl.GpsDataProviderSerial;
-import com.javislaptop.io.gps.impl.GpsDataRetriever;
+import com.javislaptop.io.gps.impl.GpsParser;
 import com.javislaptop.io.gps.model.PositionEvent;
 import com.javislaptop.io.gps.model.VelocityEvent;
 import com.javislaptop.io.sevensegment.SevenSegmentManager;
+import com.javislaptop.telemetry.service.GpsDataRetriever;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.serial.*;
@@ -24,7 +25,7 @@ public class HelloWorldGps {
                 .flowControl(FlowControl.NONE);
         serial.open(config);
 
-        final GpsDataRetriever gps = new GpsDataRetriever(new GpsDataProviderSerial(serial));
+        final GpsDataRetriever gps = new GpsDataRetriever(new GpsDataProviderSerial(serial, new GpsParser()));
         System.out.println("GPS Initialized, waiting for events");
 
         final GpioController gpio = GpioFactory.getInstance();

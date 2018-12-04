@@ -1,65 +1,9 @@
 package com.javislaptop.io.accelerometer;
 
-import com.pi4j.gpio.extension.ads.ADS1115GpioProvider;
-import com.pi4j.gpio.extension.ads.ADS1x15GpioProvider;
-import com.pi4j.io.gpio.GpioPinAnalogInput;
-import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
+public interface Accelerometer {
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+    void addListener(AccelerometerListener listener);
 
-import static java.util.stream.Stream.of;
+    Accelerometer init();
 
-public class Accelerometer implements GpioPinListenerAnalog {
-
-    //TODO this config could be configurable
-    private static final double MAX_VOLTAGE = 3.6;
-    private static final double G_DELTA = 0.30;
-    private static final double ZERO_G_Z_VOLTAGE = 1.75;
-
-    private final GpioPinAnalogInput[] inputs;
-    private final ADS1115GpioProvider gpioProvider;
-
-    private List<AccelerometerListener> listeners;
-
-    public Accelerometer(GpioPinAnalogInput[] inputs, ADS1115GpioProvider gpioProvider) {
-        this.inputs = inputs;
-        this.gpioProvider = gpioProvider;
-        this.listeners = new ArrayList<>();
-    }
-
-    public Accelerometer init() {
-        of(inputs).forEach(x -> x.addListener(this));
-        return this;
-    }
-
-    @Override
-    public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event) {
-        getAxis(event).ifPresent(axis -> listeners.forEach(listener -> listener.onEvent(new AccelerometerEvent(axis, G_DELTA, ZERO_G_Z_VOLTAGE, getScaledVoltage(event)))));
-    }
-
-    private double getScaledVoltage(GpioPinAnalogValueChangeEvent event) {
-        double per_one = (event.getValue() / ADS1115GpioProvider.ADS1115_RANGE_MAX_VALUE);
-
-        // approximate voltage ( *scaled based on PGA setting )
-        double voltage = gpioProvider.getProgrammableGainAmplifier(event.getPin()).getVoltage() * per_one;
-        return voltage * MAX_VOLTAGE / ADS1x15GpioProvider.ProgrammableGainAmplifierValue.PGA_4_096V.getVoltage();
-    }
-
-    private Optional<Axis> getAxis(GpioPinAnalogValueChangeEvent event) {
-        if (event.getPin().getName().equals("Axis Z")) {
-            return Optional.of(Axis.Z);
-        } else if (event.getPin().getName().equals("Axis Y")) {
-            return Optional.of(Axis.Y);
-        } else if (event.getPin().getName().equals("Axis X")) {
-            return Optional.of(Axis.X);
-        }
-        return Optional.empty();
-    }
-
-    public void addListener(AccelerometerListener listener) {
-        this.listeners.add(listener);
-    }
 }

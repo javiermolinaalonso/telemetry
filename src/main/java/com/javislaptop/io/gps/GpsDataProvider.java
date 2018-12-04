@@ -1,10 +1,10 @@
 package com.javislaptop.io.gps;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface GpsDataProvider {
 
-    Optional<String> provide();
+    List<GPSEvent> provide();
 
     void shutdown();
 }
