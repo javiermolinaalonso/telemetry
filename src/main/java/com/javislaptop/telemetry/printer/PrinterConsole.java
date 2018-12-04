@@ -1,15 +1,18 @@
 package com.javislaptop.telemetry.printer;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static java.lang.Thread.sleep;
+import static java.time.ZoneOffset.UTC;
 
 @Service
 public class PrinterConsole implements Printer {
+
+    private static final String SEPARATOR = "   ";
 
     private final ConcurrentMap<PrinterType, String> lastElements;
 
@@ -17,23 +20,16 @@ public class PrinterConsole implements Printer {
         lastElements = new ConcurrentHashMap<>();
     }
 
-    @PostConstruct
-    public void tickerInit() {
-        new Thread(() -> {
-            while (true) {
-                lastElements.forEach((type, text) -> System.out.print(String.format("%s#%s$", type.getValue(), text)));
-                System.out.println();
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
     @Override
     public void print(String text, PrinterType type) {
         lastElements.put(type, text);
+    }
+
+    @Scheduled(fixedRate = 500, initialDelay = 1500)
+    void print() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%s%s", Instant.now().atZone(UTC), SEPARATOR));
+        lastElements.forEach((type, text) -> sb.append(String.format("%s#%s%s", type.getValue(), text, SEPARATOR)));
+        System.out.println(sb.toString());
     }
 }

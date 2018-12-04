@@ -9,7 +9,6 @@ import com.javislaptop.telemetry.printer.PrinterType;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 @Service
 public class GpsService implements GPSListener {
@@ -25,12 +24,6 @@ public class GpsService implements GPSListener {
     @PostConstruct
     public void init() {
         gps.addListener(this);
-        gps.init();
-    }
-
-    @PreDestroy
-    public void shutdown() {
-        gps.shutdown();
     }
 
     @Override

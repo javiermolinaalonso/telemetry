@@ -7,7 +7,6 @@ import com.pi4j.io.serial.Serial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,15 +34,6 @@ public class GpsDataProviderSerial implements GpsDataProvider {
         } catch (Exception e) {
             logger.error("Exception while reading serial", e);
             return Collections.emptyList();
-        }
-    }
-
-    @Override
-    public void shutdown() {
-        try {
-            serial.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

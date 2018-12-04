@@ -1,10 +1,10 @@
 package com.javislaptop.io.accelerometer;
 
+import org.springframework.scheduling.annotation.Scheduled;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static java.lang.Thread.sleep;
 
 public class AccelerometerMock implements Accelerometer {
 
@@ -23,22 +23,17 @@ public class AccelerometerMock implements Accelerometer {
         this.listeners.add(listener);
     }
 
+    @Scheduled(fixedRate = 100)
+    void notifyListeners() {
+        this.listeners.forEach(listener -> listener.onEvent(generateRandomEvent()));
+    }
+
     @Override
     public Accelerometer init() {
-        new Thread(() -> {
-            while (true) {
-                this.listeners.forEach(listener -> listener.onEvent(generateRandomEvent()));
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
         return this;
     }
 
     private AccelerometerEvent generateRandomEvent() {
-        return new AccelerometerEvent(Axis.Z, 0.3, 0, ThreadLocalRandom.current().nextDouble(-0.3, 0.3));
+        return new AccelerometerEvent(Axis.Z, 0.3, 0, ThreadLocalRandom.current().nextDouble(-0.2, 0.2));
     }
 }

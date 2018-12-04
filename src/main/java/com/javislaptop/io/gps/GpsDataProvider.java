@@ -6,5 +6,4 @@ public interface GpsDataProvider {
 
     List<GPSEvent> provide();
 
-    void shutdown();
 }

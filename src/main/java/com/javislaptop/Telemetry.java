@@ -22,12 +22,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.IOException;
 
 @SpringBootApplication
 @Configuration
 @ComponentScan(basePackages = {"com.javislaptop.telemetry"})
+@EnableScheduling
 public class Telemetry {
 
     public static void main(final String[] args) {
