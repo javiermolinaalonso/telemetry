@@ -23,6 +23,7 @@ public class AccelerometerAnalog implements GpioPinListenerAnalog, Accelerometer
     private final ADS1115GpioProvider gpioProvider;
 
     private List<AccelerometerListener> listeners;
+    private final List<Double> calibrationValues;
 
     public AccelerometerAnalog(GpioPinAnalogInput[] inputs, ADS1115GpioProvider gpioProvider) {
         this.inputs = inputs;
@@ -38,7 +39,22 @@ public class AccelerometerAnalog implements GpioPinListenerAnalog, Accelerometer
 
     @Override
     public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event) {
-        getAxis(event).ifPresent(axis -> listeners.forEach(listener -> listener.onEvent(new AccelerometerEvent(axis, G_DELTA, ZERO_G_Z_VOLTAGE, getScaledVoltage(event)))));
+        if (isCalibrated()) {
+            notifyListeners(event);
+        } else {
+            calibrate();
+        }
+    }
+
+    private void calibrate() {
+
+    }
+
+    private void notifyListeners(GpioPinAnalogValueChangeEvent event) {
+        getAxis(event).ifPresent(axis -> listeners.forEach(listener -> {
+            final AccelerometerEvent accelerometerEvent = new AccelerometerEvent(axis, G_DELTA, ZERO_G_Z_VOLTAGE, getScaledVoltage(event));
+            listener.onEvent(accelerometerEvent);
+        }));
     }
 
     private double getScaledVoltage(GpioPinAnalogValueChangeEvent event) {
@@ -63,4 +79,9 @@ public class AccelerometerAnalog implements GpioPinListenerAnalog, Accelerometer
     public void addListener(AccelerometerListener listener) {
         this.listeners.add(listener);
     }
+
+    private boolean isCalibrated() {
+        return calibrated;
+    }
+
 }
