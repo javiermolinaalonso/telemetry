@@ -66,26 +66,17 @@
 
     <build>
         <plugins>
-            <!-- This plugin will generate JAR MANIFEST file inside the JAR in order to make our application easily runnable -->
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>${pi.main.class}</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                    <mainClass>${pi.main.class}</mainClass>
+                    <layout>JAR</layout>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-my-jar-with-dependencies</id>
-                        <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -111,7 +102,7 @@
 
                                 <!-- copy the JAR file to the Raspberry Pi -->
                                 <scp
-                                        file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
+                                        file="${project.build.directory}/${project.build.finalName}.jar"
                                         todir="${pi.user}:${pi.password}@${pi.host}:${pi.deployDirectory}"
                                         port="${pi.port}" trust="true" verbose="true" failonerror="true">
                                 </scp>
@@ -120,7 +111,7 @@
                                 <sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
                                          password="${pi.password}" trust="true" failonerror="false"
                                          verbose="true"
-                                         command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar -Dspring.profiles.active=raspi"/>
+                                         command="java -jar ${pi.deployDirectory}/${project.build.finalName}.jar -Dspring.profiles.active=raspi"/>
                             </tasks>
                         </configuration>
                     </execution>

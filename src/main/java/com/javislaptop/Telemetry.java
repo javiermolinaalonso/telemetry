@@ -39,6 +39,7 @@ public class Telemetry {
     @Bean
     @Profile("raspi")
     public Accelerometer accelerometerRaspi() throws IOException, I2CFactory.UnsupportedBusNumberException {
+        System.out.println("Initializing accelerometer");
         final GpioController gpioController = GpioFactory.getInstance();
         final ADS1115GpioProvider gpioProvider = new ADS1115GpioProvider(I2CBus.BUS_1, ADS1115GpioProvider.ADS1115_ADDRESS_0x48);
         gpioProvider.setProgrammableGainAmplifier(ADS1x15GpioProvider.ProgrammableGainAmplifierValue.PGA_4_096V, ADS1115Pin.ALL);
@@ -51,8 +52,12 @@ public class Telemetry {
                 gpioController.provisionAnalogInputPin(gpioProvider, ADS1115Pin.INPUT_A2, "Axis Z"),
                 gpioController.provisionAnalogInputPin(gpioProvider, ADS1115Pin.INPUT_A3, "UNK"),
         };
+        System.out.println("Initializing accelerometer");
 
-        return new AccelerometerAnalog(myInputs, gpioProvider).init();
+        final Accelerometer accelerometer = new AccelerometerAnalog(myInputs, gpioProvider).init();
+
+        System.out.println("Accelerometer initialized");
+        return accelerometer;
     }
 
     @Bean
@@ -64,6 +69,7 @@ public class Telemetry {
     @Bean
     @Profile("raspi")
     public GpsDataProvider gpsRaspi() throws Exception {
+        System.out.println("Initializing gps");
         final Serial serial = SerialFactory.createInstance();
         SerialConfig config = new SerialConfig();
         config.device("/dev/ttyUSB0")
@@ -73,7 +79,7 @@ public class Telemetry {
                 .stopBits(StopBits._1)
                 .flowControl(FlowControl.NONE);
         serial.open(config);
-
+        System.out.println("GPS Initialized");
         return new GpsDataProviderSerial(serial, new GpsParser());
     }
 
