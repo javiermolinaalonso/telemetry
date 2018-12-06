@@ -66,7 +66,7 @@
 
     <build>
         <plugins>
-            <!-- This plugin will generate JAR MANIFEST file inside the JAR in order to make our applicationeasily runnable -->
+            <!-- This plugin will generate JAR MANIFEST file inside the JAR in order to make our application easily runnable -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
@@ -120,7 +120,7 @@
                                 <sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
                                          password="${pi.password}" trust="true" failonerror="false"
                                          verbose="true"
-                                         command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar"/>
+                                         command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar -Dspring.profiles.active=raspi"/>
                             </tasks>
                         </configuration>
                     </execution>

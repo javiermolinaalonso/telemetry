@@ -34,6 +34,6 @@ public class AccelerometerMock implements Accelerometer {
     }
 
     private AccelerometerEvent generateRandomEvent() {
-        return new AccelerometerEvent(Axis.Z, 0.3, 0, ThreadLocalRandom.current().nextDouble(-0.2, 0.2));
+        return new AccelerometerEvent(ThreadLocalRandom.current().nextInt() % 2 == 0 ? Axis.Z : Axis.X, 0.3, 0, ThreadLocalRandom.current().nextDouble(-0.2, 0.2));
     }
 }

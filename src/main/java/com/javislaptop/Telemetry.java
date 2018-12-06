@@ -37,7 +37,7 @@ public class Telemetry {
     }
 
     @Bean
-    @Profile("!mock")
+    @Profile("raspi")
     public Accelerometer accelerometerRaspi() throws IOException, I2CFactory.UnsupportedBusNumberException {
         final GpioController gpioController = GpioFactory.getInstance();
         final ADS1115GpioProvider gpioProvider = new ADS1115GpioProvider(I2CBus.BUS_1, ADS1115GpioProvider.ADS1115_ADDRESS_0x48);
@@ -62,7 +62,7 @@ public class Telemetry {
     }
 
     @Bean
-    @Profile("!mock")
+    @Profile("raspi")
     public GpsDataProvider gpsRaspi() throws Exception {
         final Serial serial = SerialFactory.createInstance();
         SerialConfig config = new SerialConfig();

@@ -32,10 +32,13 @@ public class LeanService implements AccelerometerListener {
 
     @Override
     public void onEvent(AccelerometerEvent event) {
+        final double gForce = Math.abs(event.getValue() - event.getZeroG()) / event.getgDelta();
+
         if (event.getAxis() == Axis.Z) {
-            final double asinvalue = Math.abs(event.getValue() - event.getZeroG()) / event.getgDelta();
-            final double degrees = toDegrees(acos(1 - asinvalue));
+            final double degrees = toDegrees(acos(1 - gForce));
             printer.print(PrinterConsole.DECIMAL_FORMAT.format(degrees), PrinterType.LEAN);
+        } else if (event.getAxis() == Axis.X) {
+            printer.print(PrinterConsole.DECIMAL_FORMAT.format(gForce), PrinterType.ACCELERATION);
         }
     }
 

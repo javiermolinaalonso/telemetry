@@ -3,7 +3,8 @@ package com.javislaptop.telemetry.printer;
 public enum PrinterType {
     POSITION("P"),
     SPEED("S"),
-    LEAN("L");
+    LEAN("L"),
+    ACCELERATION("A");
 
 
     private final String value;
