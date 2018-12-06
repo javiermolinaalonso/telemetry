@@ -45,12 +45,9 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalDouble;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.Math.acos;
-import static java.lang.Math.asin;
 import static java.lang.Math.toDegrees;
 
 /**
@@ -136,7 +133,8 @@ public class HelloWorldI2C {
         gpioProvider.setMonitorInterval(50);
 
         final SevenSegmentManager sevenSegmentManager = new SevenSegmentManager(gpio);
-
+        List<Double> zeroGs = new ArrayList<>();
+        final AtomicReference<Double> zeroGVoltage = new AtomicReference<>();
         GpioPinListenerAnalog listener = new GpioPinListenerAnalog() {
             @Override
             public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event) {
@@ -154,11 +152,20 @@ public class HelloWorldI2C {
 
                 // display output
                 if (event.getPin().getName().equals(AXIS_Z)) {
-                    final double asinvalue = Math.abs(voltage - ZERO_G_Z_VOLTAGE) / G_DELTA;
-                    final double degrees = toDegrees(acos(1-asinvalue));
-                    System.out.println(" (" + event.getPin().getName() + ") : VOLTS=" + df.format(voltage) + "  | PERCENT=" + pdf.format(percent) + "% | RAW=" + value + "       ");
-                    System.out.println(asinvalue + " " + degrees);
-                    sevenSegmentManager.print(Double.valueOf(degrees).intValue());
+                    if (zeroGs.size() < 10) {
+                        zeroGs.add(voltage);
+                        System.out.println("Calibrating");
+                    } else if (zeroGs.size() == 10) {
+                        zeroGVoltage.set(zeroGs.stream().mapToDouble(x -> x).average().getAsDouble());
+                        System.out.println("Calibrated 0g at voltage " + zeroGVoltage.get());
+                        zeroGs.add(0d);
+                    } else {
+                        final double asinvalue = Math.abs(voltage - zeroGVoltage.get()) / G_DELTA;
+                        final double degrees = toDegrees(acos(1 - asinvalue));
+                        System.out.println(" (" + event.getPin().getName() + ") : VOLTS=" + df.format(voltage) + "  | PERCENT=" + pdf.format(percent) + "% | RAW=" + value + "       ");
+                        System.out.println(asinvalue + " " + degrees);
+                        sevenSegmentManager.print(Double.valueOf(degrees).intValue());
+                    }
                 }
             }
         };
