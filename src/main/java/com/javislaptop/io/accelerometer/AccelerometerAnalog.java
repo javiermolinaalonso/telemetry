@@ -1,34 +1,29 @@
 package com.javislaptop.io.accelerometer;
 
-import com.pi4j.gpio.extension.ads.ADS1115GpioProvider;
-import com.pi4j.gpio.extension.ads.ADS1x15GpioProvider;
 import com.pi4j.io.gpio.GpioPinAnalogInput;
 import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Stream.of;
 
 public class AccelerometerAnalog implements GpioPinListenerAnalog, Accelerometer {
 
     //TODO this config could be configurable
-    private static final double MAX_VOLTAGE = 3.6;
-    private static final double G_DELTA = 0.30;
-    private static final double ZERO_G_Z_VOLTAGE = 1.75;
+    private static final double G_DELTA = 2640;
 
     private final GpioPinAnalogInput[] inputs;
-    private final ADS1115GpioProvider gpioProvider;
 
     private List<AccelerometerListener> listeners;
-    private final List<Double> calibrationValues;
+    private final Map<Axis, List<Double>> calibrationValues;
+    private final Map<Axis, Double> calibratedValues;
 
-    public AccelerometerAnalog(GpioPinAnalogInput[] inputs, ADS1115GpioProvider gpioProvider) {
+    public AccelerometerAnalog(GpioPinAnalogInput[] inputs) {
         this.inputs = inputs;
-        this.gpioProvider = gpioProvider;
         this.listeners = new ArrayList<>();
+        this.calibrationValues = new HashMap<>();
+        this.calibratedValues = new HashMap<>();
     }
 
     @Override
@@ -39,30 +34,23 @@ public class AccelerometerAnalog implements GpioPinListenerAnalog, Accelerometer
 
     @Override
     public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event) {
-        if (isCalibrated()) {
-            notifyListeners(event);
-        } else {
-            calibrate();
-        }
+        getAxis(event).ifPresent(axis -> {
+            final Optional<Double> calibratedValue = getCalibratedValue(axis);
+            if (calibratedValue.isPresent()) {
+                notifyListeners(new AccelerometerEvent(axis, G_DELTA, calibratedValue.get(), event.getValue()));
+            } else {
+                calibrate(axis, event.getValue());
+            }
+        });
     }
 
-    private void calibrate() {
-
+    private void calibrate(Axis axis, double value) {
+        calibrationValues.putIfAbsent(axis, new ArrayList<>());
+        calibrationValues.get(axis).add(value);
     }
 
-    private void notifyListeners(GpioPinAnalogValueChangeEvent event) {
-        getAxis(event).ifPresent(axis -> listeners.forEach(listener -> {
-            final AccelerometerEvent accelerometerEvent = new AccelerometerEvent(axis, G_DELTA, ZERO_G_Z_VOLTAGE, getScaledVoltage(event));
-            listener.onEvent(accelerometerEvent);
-        }));
-    }
-
-    private double getScaledVoltage(GpioPinAnalogValueChangeEvent event) {
-        double per_one = (event.getValue() / ADS1115GpioProvider.ADS1115_RANGE_MAX_VALUE);
-
-        // approximate voltage ( *scaled based on PGA setting )
-        double voltage = gpioProvider.getProgrammableGainAmplifier(event.getPin()).getVoltage() * per_one;
-        return voltage * MAX_VOLTAGE / ADS1x15GpioProvider.ProgrammableGainAmplifierValue.PGA_4_096V.getVoltage();
+    private void notifyListeners(AccelerometerEvent event) {
+        listeners.forEach(listener -> listener.onEvent(event));
     }
 
     private Optional<Axis> getAxis(GpioPinAnalogValueChangeEvent event) {
@@ -80,8 +68,17 @@ public class AccelerometerAnalog implements GpioPinListenerAnalog, Accelerometer
         this.listeners.add(listener);
     }
 
-    private boolean isCalibrated() {
-        return calibrated;
+    private Optional<Double> getCalibratedValue(Axis axis) {
+        final Double calibratedValue = calibratedValues.get(axis);
+        if (calibratedValue == null) {
+            final boolean calibrated = calibrationValues.getOrDefault(axis, new ArrayList<>()).size() >= 10;
+            if (calibrated) {
+                calibratedValues.put(axis, calibrationValues.get(axis).stream().mapToDouble(x -> x).average().getAsDouble());
+            }
+            return Optional.empty();
+        } else {
+            return Optional.of(calibratedValue);
+        }
     }
 
 }

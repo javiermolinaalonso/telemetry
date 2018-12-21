@@ -25,7 +25,7 @@ public class PrinterConsole implements Printer {
         lastElements.put(type, text);
     }
 
-    @Scheduled(fixedRate = 500, initialDelay = 1500)
+    @Scheduled(fixedRate = 5000, initialDelay = 1500)
     void print() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%s%s", Instant.now().atZone(UTC), SEPARATOR));

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
-import static java.lang.Math.acos;
+import static java.lang.Math.asin;
 import static java.lang.Math.toDegrees;
 
 @Service
@@ -35,10 +35,10 @@ public class LeanService implements AccelerometerListener {
         final double gForce = Math.abs(event.getValue() - event.getZeroG()) / event.getgDelta();
 
         if (event.getAxis() == Axis.Z) {
-            final double degrees = toDegrees(acos(1 - gForce));
+            final double degrees = toDegrees(asin(gForce));
             printer.print(PrinterConsole.DECIMAL_FORMAT.format(degrees), PrinterType.LEAN);
         } else if (event.getAxis() == Axis.X) {
-            printer.print(PrinterConsole.DECIMAL_FORMAT.format(gForce), PrinterType.ACCELERATION);
+//            printer.print(PrinterConsole.DECIMAL_FORMAT.format(gForce), PrinterType.ACCELERATION);
         }
     }
 

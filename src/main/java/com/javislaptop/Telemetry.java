@@ -54,7 +54,7 @@ public class Telemetry {
         };
         System.out.println("Initializing accelerometer");
 
-        final Accelerometer accelerometer = new AccelerometerAnalog(myInputs, gpioProvider).init();
+        final Accelerometer accelerometer = new AccelerometerAnalog(myInputs).init();
 
         System.out.println("Accelerometer initialized");
         return accelerometer;
@@ -68,7 +68,7 @@ public class Telemetry {
 
     @Bean
     @Profile("raspi")
-    public GpsDataProvider gpsRaspi() throws Exception {
+    public GpsDataProvider gpsRaspi() {
         System.out.println("Initializing gps");
         final Serial serial = SerialFactory.createInstance();
         SerialConfig config = new SerialConfig();
@@ -78,9 +78,14 @@ public class Telemetry {
                 .parity(Parity.NONE)
                 .stopBits(StopBits._1)
                 .flowControl(FlowControl.NONE);
-        serial.open(config);
-        System.out.println("GPS Initialized");
-        return new GpsDataProviderSerial(serial, new GpsParser());
+        try {
+            serial.open(config);
+            System.out.println("GPS Initialized");
+            return new GpsDataProviderSerial(serial, new GpsParser());
+        } catch (IOException e) {
+            System.out.println("Cannot initialize GPS");
+            return new GpsDataProviderMock();
+        }
     }
 
     @Bean

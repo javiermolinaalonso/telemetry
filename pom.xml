@@ -111,7 +111,7 @@
                                 <sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
                                          password="${pi.password}" trust="true" failonerror="false"
                                          verbose="true"
-                                         command="java -jar ${pi.deployDirectory}/${project.build.finalName}.jar -Dspring.profiles.active=raspi"/>
+                                         command="java -jar -Dspring.profiles.active=raspi ${pi.deployDirectory}/${project.build.finalName}.jar"/>
                             </tasks>
                         </configuration>
                     </execution>
