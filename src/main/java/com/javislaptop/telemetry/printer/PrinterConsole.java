@@ -1,5 +1,7 @@
 package com.javislaptop.telemetry.printer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import static java.time.ZoneOffset.UTC;
 
 @Service
 public class PrinterConsole implements Printer {
+
+    private static final Logger logger = LoggerFactory.getLogger(PrinterConsole.class);
 
     private static final String SEPARATOR = "   ";
 
@@ -30,6 +34,6 @@ public class PrinterConsole implements Printer {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%s%s", Instant.now().atZone(UTC), SEPARATOR));
         lastElements.forEach((type, text) -> sb.append(String.format("%s#%s%s", type.getValue(), text, SEPARATOR)));
-        System.out.println(sb.toString());
+        logger.info(sb.toString());
     }
 }

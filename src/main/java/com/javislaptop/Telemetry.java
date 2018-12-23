@@ -17,7 +17,6 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.serial.*;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.IOException;
 
-@SpringBootApplication
 @Configuration
 @ComponentScan(basePackages = {"com.javislaptop.telemetry"})
 @EnableScheduling
