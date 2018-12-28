@@ -9,4 +9,6 @@ public interface Printer {
 
     void print(String text, PrinterType type);
 
+    String getEvents(String separator);
+
 }

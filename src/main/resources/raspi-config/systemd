@@ -1,0 +1,17 @@
+# /etc/systemd/system/telemetry.service
+
+[Unit]
+Description=Telemetry service
+
+[Service]
+EnvironmentFile=-/etc/default/telemetry
+WorkingDirectory=/home/pi/projects
+User=pi
+ExecStart=/usr/bin/java -Duser.timezone=UTC -Dspring.profiles.active=raspi $JAVA_OPTS -jar $BINARY
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=telemetry
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

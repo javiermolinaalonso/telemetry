@@ -1,0 +1,6 @@
+# /etc/default/telemetry
+
+APP_ROOT=/home/pi/projects
+BINARY="raspi-1.0-SNAPSHOT.jar"
+USER="pi"
+JAVA_OPTS="-Xmx256m"

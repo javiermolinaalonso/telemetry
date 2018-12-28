@@ -16,6 +16,8 @@ import com.pi4j.io.gpio.GpioPinAnalogInput;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.serial.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,6 +31,8 @@ import java.io.IOException;
 @ComponentScan(basePackages = {"com.javislaptop.telemetry"})
 @EnableScheduling
 public class Telemetry {
+
+    private static final Logger logger = LoggerFactory.getLogger(Telemetry.class);
 
     public static void main(final String[] args) {
         SpringApplication.run(Telemetry.class, args);
@@ -67,7 +71,7 @@ public class Telemetry {
     @Bean
     @Profile("raspi")
     public GpsDataProvider gpsRaspi() {
-        System.out.println("Initializing gps");
+        logger.info("Initializing gps");
         final Serial serial = SerialFactory.createInstance();
         SerialConfig config = new SerialConfig();
         config.device("/dev/ttyUSB0")
@@ -78,10 +82,10 @@ public class Telemetry {
                 .flowControl(FlowControl.NONE);
         try {
             serial.open(config);
-            System.out.println("GPS Initialized");
+            logger.info("GPS Initialized");
             return new GpsDataProviderSerial(serial, new GpsParser());
         } catch (IOException e) {
-            System.out.println("Cannot initialize GPS");
+            logger.error("Cannot initialize GPS", e);
             return new GpsDataProviderMock();
         }
     }
